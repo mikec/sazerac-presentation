@@ -1,0 +1,287 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>reveal.js</title>
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/white.css">
+		<link rel="stylesheet" href="css/overrides.css">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="lib/css/atom-one-light.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+
+				<section data-markdown>
+					<script type="text/template">
+						### Sazerac: Data-Driven Unit Testing
+						[github.com/mikec/sazerac](https://github.com/mikec/sazerac)
+					</script>
+				</section>
+
+				<section data-markdown>
+					<script type="text/template">
+						<div class="profile">
+							<img src="images/mike.png" />
+						</div>
+						[@MikeCalvanese](https://twitter.com/@MikeCalvanese) <img class="twitter" src="images/twitter.png" /> <img class="medium" src="images/medium.png" />
+						<br />
+						<img class="rocket" src="images/rocket.png" />
+						<br />
+						Rocket Insights
+					</script>
+				</section>
+
+				<section data-markdown>
+					<script type="text/template">
+						#### Let's talk about:
+						1. Data-driven testing? <!-- .element: class="fragment" data-fragment-index="1" -->
+						2. Sazerac? <!-- .element: class="fragment" data-fragment-index="2" -->
+						3. Demo! <!-- .element: class="fragment" data-fragment-index="3" -->
+					</script>
+				</section>
+
+				<section data-markdown>
+					<script type="text/template">
+						#### Functional Programming in JS
+						----
+						<br />
+						<span>`map()`, `reduce()`, and `const`</span> <!-- .element: class="fragment" data-fragment-index="1" -->
+						<br />
+						<span>
+							<img class="react" src="/images/react.png" />
+							<img class="redux" src="/images/redux.png" />
+						</span> <!-- .element: class="fragment" data-fragment-index="2" -->
+						<br />
+						<span>
+							<img class="immutable" src="/images/immutable.png" />
+							<span>
+								<img class="rxjs" src="/images/rxjs.png" />
+							</span> <!-- .element: class="fragment" data-fragment-index="4" -->
+						</span> <!-- .element: class="fragment" data-fragment-index="3" -->
+					</script>
+				</section>
+
+				<section data-markdown>
+					<script type="text/template">
+						#### Pure Functions
+						----
+						- Given an input, always return the same output <!-- .element: class="fragment" data-fragment-index="1" -->
+						- Produce no side effects <!-- .element: class="fragment" data-fragment-index="2" -->
+						- Rely on no external mutable state <!-- .element: class="fragment" data-fragment-index="3" -->
+					</script>
+				</section>
+
+				<section data-markdown>
+					<script type="text/template">
+						```js
+						function isPrime(num) {
+							for(var i = 2; i < num; i++) {
+								if(num % i === 0) return false;
+							}
+							return num > 1;
+						}
+						```
+					</script>
+				</section>
+
+				<section data-markdown>
+					<script type="text/template">
+						```js
+						describe('isPrime()', function {
+							describe('when given 1', function {
+								it('should return false', function {
+									assert.isFalse(isPrime(1))
+								})
+							})
+							describe('when given 2', function {
+								it('should return true', function {
+									assert.isTrue(isPrime(2))
+								})
+							})
+							/* and more... */
+						})
+						```
+					</script>
+				</section>
+
+				<section data-markdown>
+					<script type="text/template">
+						#### Data-driven Testing
+						----
+						### Tests are simplified into sets of given inputs and expected outputs
+					</script>
+				</section>
+
+				<section data-markdown>
+					<script type="text/template">
+						```js
+						const cases = [
+							[1, false],
+							[2, true],
+							[3, true]
+						]
+						describe('isPrime()', function() {
+							cases.forEach(function(c) {
+								describe('when given ' + c[0], function() {
+									it('should return ' + c[1], function() {
+										assert.equal(isPrime(c[0]), c[1])
+									})
+								})
+							})
+						})
+						```
+					</script>
+				</section>
+				
+				<section data-markdown>
+					<script type="text/template">
+						#### Sazerac
+						----
+						<ul>
+							<li>Helper library for data-driven testing</li> <!-- .element: class="fragment" data-fragment-index="1" -->
+							<li>
+								<span>Works with **_Jasmine_**, **_Mocha_**, and **_Jest_**</span>
+								<span>
+									<span class="sub-li">(+ **_QUnit_**, **_Tape_**, and **_AVA_** someday!)</span>
+								</span><!-- .element: class="fragment" data-fragment-index="3" -->
+							</li> <!-- .element: class="fragment" data-fragment-index="2" -->
+							<li>v1.0 ... a full framework?</li> <!-- .element: class="fragment" data-fragment-index="4" -->
+						</ul>
+					</script>
+				</section>
+
+				<section data-markdown>
+					<script type="text/template">
+						```js
+						import { test, given } from 'sazerac'
+
+						test(isPrime, function() {
+							given(1).expect(false)
+							given(2).expect(true)
+							given(3).expect(true)
+						})
+						```
+					</script>
+				</section>
+
+				<section data-markdown>
+					<script type="text/template">
+						<pre class="console-output">
+							<div class="lang-console">
+							isPrime()
+								when given 1
+									<span class="green">✓</span> should return false
+								when given 2
+									<span class="green">✓</span> should return true
+								when given 3
+									<span class="green">✓</span> should return true
+							</div>
+						</pre>
+					</script>
+				</section>
+				
+				<section data-markdown>
+					<script type="text/template">
+						```js
+						import { test, given, forCases } from 'sazerac'
+
+						test(isPrime, function() {
+							const primes = [ given(2), given(3), given(5), given(7) ]
+							const nonPrimes = [ given(1), given(4), given(6), given(8) ]
+							forCases(primes).expect(true)
+							forCases(nonPrimes).expect(false)
+						})
+						```
+					</script>
+				</section>
+
+				<section data-markdown>
+					<script type="text/template">
+						## Demo
+					</script>
+				</section>
+				
+				<section data-markdown>
+					<script type="text/template">
+						<ul>
+							<li>
+								<span>Use the data-driven testing pattern</span>
+								<span>
+									<span class="sub-li">(where appropriate)</span>
+								</span> <!-- .element: class="fragment" data-fragment-index="1" -->
+							</li>
+							<li>
+								<span>Try <a href="https://github.com/mikec/sazerac">github.com/mikec/sazerac</a></span>
+								<span>
+									<span class="sub-li">(star it! fork it! contribute!)</span>
+								</span> <!-- .element: class="fragment" data-fragment-index="3" -->
+							</li> <!-- .element: class="fragment" data-fragment-index="2" -->
+							<li>
+								Hit me up <a href="https://twitter.com/@MikeCalvanese">@MikeCalvanese</a>
+							</li> <!-- .element: class="fragment" data-fragment-index="4" -->
+						</ul>
+						<br /><br />
+						## Thanks! <!-- .element: class="fragment" data-fragment-index="5" -->
+					</script>
+				</section>
+
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<div id="hidden" style="display:none;">
+			<div id="static-content">
+				<div id="footer-left">
+					<a href="https://twitter.com/@MikeCalvanese">@MikeCalvanese</a>&nbsp;&nbsp;&nbsp;&middot;&nbsp;&nbsp;&nbsp;<a href="https://github.com/mikec/sazerac">github.com/mikec/sazerac</a>
+				</div>
+			</div>
+		</div>
+
+		<script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+		<script type="text/javascript">
+			var staticContent = $('#static-content').html();
+			if ( window.location.search.match( /print-pdf/gi ) ) {
+				Reveal.addEventListener( 'ready', function( event ) {
+					$('.slide-background').append(staticContent);
+				});
+			}
+			else {
+				$('div.reveal').append(staticContent);
+			}
+		</script>
+
+		<script>
+			// More info https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				history: true,
+
+				// More info https://github.com/hakimel/reveal.js#dependencies
+				dependencies: [
+					{ src: 'plugin/markdown/marked.js' },
+					{ src: 'plugin/markdown/markdown.js' },
+					{ src: 'plugin/notes/notes.js', async: true },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+				],
+
+				transition: 'convex'
+			});
+		</script>
+	</body>
+</html>
